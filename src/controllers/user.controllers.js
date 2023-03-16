@@ -1,5 +1,3 @@
-import { isNumeric, randChoice } from "../utils"
-import { readFile, writeFile } from "../utils/file"
 import { errorResponse, successResponse } from "../utils/response"
 
 export const getRandomUser = async (_req, res) => {
