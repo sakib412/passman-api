@@ -7,7 +7,9 @@ import 'dotenv/config'
 import config from './config';
 import errorHandler from './middleware/errorHandler';
 import { successResponse } from './utils/response';
-import userRouter from './routes/user.router';
+import { connect } from './utils/db';
+import itemRouter from './routes/item.router';
+import folderRouter from './routes/folder.router';
 
 export const app = express();
 
@@ -23,13 +25,15 @@ app.get('/', (req, res) => {
     res.json(successResponse({ "message": "Server is running" }));
 })
 
-app.use('/user', userRouter)
+app.use('/api/folder', folderRouter)
+app.use('/api/item', itemRouter)
 
 // handle errors
 app.use(errorHandler)
 
 export const start = async () => {
     try {
+        await connect();
         app.listen(config.port, () => {
             console.log(`App listening on PORT: ${config.port}`)
         })
