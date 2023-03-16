@@ -64,9 +64,7 @@ export const updateItem = async (req, res) => {
         }
 
         const { name, username, password, url, note, folder } = req.body;
-        const newItem = {
-
-        }
+        const newItem = {}
         if (name) {
             newItem.name = name
         }
@@ -82,9 +80,9 @@ export const updateItem = async (req, res) => {
         if (note) {
             newItem.note = note
         }
-        if (folder) {
-            newItem.folder = folder
-        }
+        // make sure to pass folder value from frontend and folder value can be null
+        newItem.folder = folder
+
 
         const updatedItem = await Item.findOneAndUpdate({ _id: req.params.id }, newItem, { new: true })
 

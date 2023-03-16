@@ -25,6 +25,7 @@ const ItemSchema = new Schema({
 
     folder: {
         type: Schema.Types.ObjectId,
+        null: true,
         ref: FOLDER,
     },
     owner: {
