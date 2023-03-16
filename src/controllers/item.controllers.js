@@ -55,3 +55,41 @@ export const deleteItem = async (req, res) => {
         return res.status(500).json(errorResponse(err.message));
     }
 }
+
+export const updateItem = async (req, res) => {
+    try {
+        const item = Item.findById(req.params.id)
+        if (!item) {
+            return res.status(404).json(errorResponse('Not found'))
+        }
+
+        const { name, username, password, url, note, folder } = req.body;
+        const newItem = {
+
+        }
+        if (name) {
+            newItem.name = name
+        }
+        if (username) {
+            newItem.username = username
+        }
+        if (password) {
+            newItem.password = password
+        }
+        if (url) {
+            newItem.url = url
+        }
+        if (note) {
+            newItem.note = note
+        }
+        if (folder) {
+            newItem.folder = folder
+        }
+
+        const updatedItem = await Item.findOneAndUpdate({ _id: req.params.id }, newItem, { new: true })
+
+        return res.status(200).json(successResponse(updatedItem))
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}
