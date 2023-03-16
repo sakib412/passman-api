@@ -6,7 +6,8 @@ export const getAllItems = async (req, res) => {
         let { page = 1, size = 10 } = req.query
         page = parseInt(page)
         size = parseInt(size)
-        const query = {}
+        // when auth is done, change owner to req.user.id
+        const query = { owner: 1 }
         const totalData = await Item.find().estimatedDocumentCount()
         const data = await Item.find(query).sort({ updatedAt: -1 }).skip((page - 1) * size).limit(size).exec()
 
@@ -38,6 +39,18 @@ export const createItem = async (req, res) => {
             folder,
         });
         return res.status(201).json(successResponse(item));
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}
+
+export const deleteItem = async (req, res) => {
+    try {
+        const item = await Item.findByIdAndDelete(req.params.id)
+        if (!item) {
+            return res.status(404).json(errorResponse("Not found!"))
+        }
+        return res.status(200).json(successResponse(item))
     } catch (err) {
         return res.status(500).json(errorResponse(err.message));
     }

@@ -28,7 +28,7 @@ const ItemSchema = new Schema({
         ref: FOLDER,
     },
     owner: {
-        type: Schema.Types.ObjectId,
+        type: Number,
         default: 1,
     },
 }, { timestamps: true });
