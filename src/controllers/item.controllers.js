@@ -91,3 +91,24 @@ export const updateItem = async (req, res) => {
         return res.status(500).json(errorResponse(err.message));
     }
 }
+
+export const bulkDeleteItem = async (req, res) => {
+    try {
+        const { ids } = req.body
+        const deletedItems = await Item.deleteMany({ _id: { $in: ids } })
+        return res.status(200).json(successResponse(deletedItems))
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}
+
+
+export const bulkFolderUpdateItem = async (req, res) => {
+    try {
+        const { ids, folder } = req.body
+        const updatedItems = await Item.updateMany({ _id: { $in: ids } }, { folder }, { new: true })
+        return res.status(200).json(successResponse(updatedItems))
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}
