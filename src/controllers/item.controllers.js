@@ -8,7 +8,7 @@ export const getAllItems = async (req, res) => {
         size = parseInt(size)
         // when auth is done, change owner to req.user.id
         const query = { owner: 1 }
-        if (folder) {
+        if (folder && folder !== "null") {
             query.folder = folder
         }
         const totalData = await Item.find().estimatedDocumentCount()
