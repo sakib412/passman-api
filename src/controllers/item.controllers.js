@@ -115,3 +115,15 @@ export const bulkFolderUpdateItem = async (req, res) => {
         return res.status(500).json(errorResponse(err.message));
     }
 }
+
+export const insertManyItem = async (req, res) => {
+    try {
+        const { items } = req.body
+        const insertedItems = await Item.insertMany(items)
+        return res.status(200).json(successResponse(insertedItems))
+
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+
+}

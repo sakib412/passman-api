@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { bulkDeleteItem, bulkFolderUpdateItem, createItem, deleteItem, getAllItems, updateItem } from "../controllers/item.controllers";
+import { bulkDeleteItem, bulkFolderUpdateItem, createItem, deleteItem, getAllItems, insertManyItem, updateItem } from "../controllers/item.controllers";
 
 
 const itemRouter = Router()
@@ -9,9 +9,13 @@ itemRouter.route('/')
 itemRouter.put("/update-many", bulkFolderUpdateItem)
 itemRouter.post('/delete-many', bulkDeleteItem)
 
+itemRouter.post('/insert-many', insertManyItem)
+
 itemRouter.route('/:id')
     .put(updateItem)
     .delete(deleteItem)
+
+
 
 
 export default itemRouter
