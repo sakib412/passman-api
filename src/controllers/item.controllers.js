@@ -3,11 +3,14 @@ import { errorResponse, successResponse } from "../utils/response"
 
 export const getAllItems = async (req, res) => {
     try {
-        let { page = 1, size = 10 } = req.query
+        let { page = 1, size = 10, folder } = req.query
         page = parseInt(page)
         size = parseInt(size)
         // when auth is done, change owner to req.user.id
         const query = { owner: 1 }
+        if (folder) {
+            query.folder = folder
+        }
         const totalData = await Item.find().estimatedDocumentCount()
         const data = await Item.find(query).sort({ updatedAt: -1 }).skip((page - 1) * size).limit(size).exec()
 
