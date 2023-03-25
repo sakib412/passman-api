@@ -1,35 +1,8 @@
 import { errorResponse, successResponse } from "../utils/response"
 
-export const getRandomUser = async (_req, res) => {
+export const signup = async (req, res) => {
     try {
-        const users = readFile()
-        const randomUser = randChoice(users)
-        return res.status(200).json(successResponse(randomUser))
-    } catch (err) {
-        return res.status(500).json(errorResponse(err.message));
-    }
-}
-
-export const getAllUsers = async (req, res) => {
-    try {
-        const { limit } = req.query;
-        let users = readFile()
-
-        if (limit && isNumeric(limit)) {
-            console.log(limit)
-            users = users.slice(0, Number(limit))
-        }
-
-        return res.status(200).json(successResponse(users))
-    } catch (err) {
-        return res.status(500).json(errorResponse(err.message));
-    }
-}
-
-export const createUser = async (req, res) => {
-    try {
-        const { name, gender, contact, address, photoUrl } = req.body;
-        let users = readFile()
+        const { username, password } = req.body;
 
         const index = users.findIndex((user) => user.name === name && user.contact === contact)
         if (index > -1) {
