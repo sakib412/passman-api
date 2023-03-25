@@ -12,6 +12,7 @@ import { connect } from './utils/db';
 import itemRouter from './routes/item.router';
 import folderRouter from './routes/folder.router';
 import userRouter from './routes/user.router';
+import requireAuth from './middleware/auth';
 
 export const app = express();
 
@@ -24,9 +25,11 @@ app.use(morgan('dev'))
 app.use(session({
     secret: config.secrets.session,
     saveUninitialized: false,
+    resave: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: 'lax'
+        sameSite: 'lax',
+        secure: config.env === 'production'
     }
 }))
 
@@ -39,6 +42,9 @@ app.use('/api/auth', userRouter)
 
 app.use('/api/folder', folderRouter)
 app.use('/api/item', itemRouter)
+
+app.use(requireAuth)
+
 
 // handle errors
 app.use(errorHandler)

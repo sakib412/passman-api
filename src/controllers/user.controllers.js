@@ -44,3 +44,20 @@ export const login = async (req, res) => {
     }
 
 }
+
+export const logout = async (req, res) => {
+    try {
+        req.session.destroy();
+        res.status(200).json(successResponse("Logout successful!"))
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}
+
+export const getUser = async (req, res) => {
+    try {
+        return res.status(200).json(successResponse(req.user))
+    } catch (err) {
+        return res.status(500).json(errorResponse(err.message));
+    }
+}

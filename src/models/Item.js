@@ -1,5 +1,5 @@
 import { Schema, model, models } from "mongoose";
-import { FOLDER, ITEM } from "./collectionName";
+import { FOLDER, ITEM, USER } from "./collectionName";
 
 const ItemSchema = new Schema({
     name: {
@@ -29,8 +29,8 @@ const ItemSchema = new Schema({
         ref: FOLDER,
     },
     owner: {
-        type: Number,
-        default: 1,
+        type: Schema.Types.ObjectId,
+        ref: USER
     },
 }, { timestamps: true });
 
