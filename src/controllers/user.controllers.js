@@ -1,92 +1,46 @@
+import User from "../models/User";
 import { errorResponse, successResponse } from "../utils/response"
 
 export const signup = async (req, res) => {
     try {
         const { username, password } = req.body;
-
-        const index = users.findIndex((user) => user.name === name && user.contact === contact)
-        if (index > -1) {
-            return res.status(409).json(errorResponse('User with this name and contact already exist! Try with a different name or contact'))
+        if (!username || !password) {
+            return res.status(400).json(errorResponse("Missing username or password"))
         }
-        const body = {
-            name, gender, contact, address, photoUrl
-        }
-        users.push(body)
-        writeFile(users)
-        return res.status(201).json(successResponse(body))
+        const user = await User.create({
+            username,
+            password,
+        });
+        return res.status(201).json(successResponse(user))
 
     } catch (err) {
         return res.status(500).json(errorResponse(err.message));
     }
 }
 
-export const updateUser = async (req, res) => {
+
+export const login = async (req, res) => {
     try {
-        const { id, name, gender, contact, address, photoUrl } = req.body;
-        let users = readFile()
-
-        const index = users.findIndex((user) => user.id === id)
-        if (index < 0) {
-            return res.status(404).json(errorResponse('User not found with this id'))
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json(errorResponse("Missing username or password"))
         }
-        name && (users[index].name = name)
-        gender && (users[index].gender = gender)
-        contact && (users[index].contact = contact)
-        address && (users[index].address = address)
-        photoUrl && (users[index].photoUrl = photoUrl)
 
-        writeFile(users)
-        return res.status(201).json(successResponse(users[index]))
+        const user = await User.findOne({ username });
+        if (!user) {
+            return res.status(404).json(errorResponse("Incorrect username or password"))
+        }
+        const isMatch = await user.checkPassword(password);
+        if (!isMatch) {
+            return res.status(404).json(errorResponse("Incorrect username or password"))
+        }
+        req.session.userId = user._id;
+
+        res.status(200).json(successResponse("Login successful!"))
+
 
     } catch (err) {
         return res.status(500).json(errorResponse(err.message));
     }
 
-}
-
-export const bulkUpdate = async (req, res) => {
-    try {
-        const { users } = req.body;
-        if (!Array.isArray(users)) {
-            return res.status(400).json(errorResponse("Please pass an array of users!"));
-        }
-        let usersData = readFile()
-        const newData = []
-
-        users.forEach(user => {
-            const { id, name, gender, contact, address, photoUrl } = user;
-            const i = usersData.findIndex(u => u.id == id)
-            if (i > -1) {
-                name && (usersData[i].name = name)
-                gender && (usersData[i].gender = gender)
-                contact && (usersData[i].contact = contact)
-                address && (usersData[i].address = address)
-                photoUrl && (usersData[i].photoUrl = photoUrl)
-                newData.push(usersData[i])
-            }
-        })
-
-        writeFile(usersData)
-        return res.status(200).json(successResponse(newData));
-
-    } catch (err) {
-        return res.status(500).json(errorResponse(err.message))
-    }
-}
-
-export const deleteUser = async (req, res) => {
-    try {
-        const { id } = req.body;
-        let users = readFile();
-        const index = users.findIndex((user) => user.id === id)
-        if (index < 0) {
-            return res.status(404).json(errorResponse('User not found with this id'))
-        }
-        users.splice(index, 1);
-        writeFile(users);
-        return res.status(204).json(successResponse({ message: `User deleted. Id: ${id}.` }))
-
-    } catch (err) {
-        return res.status(500).json(errorResponse(err.message));
-    }
 }
