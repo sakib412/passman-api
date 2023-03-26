@@ -11,6 +11,7 @@ export const signup = async (req, res) => {
             username,
             password,
         });
+        req.session.userId = user._id;
         return res.status(201).json(successResponse(user))
 
     } catch (err) {

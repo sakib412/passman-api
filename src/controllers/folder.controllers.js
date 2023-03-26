@@ -7,8 +7,8 @@ export const getAllFolders = async (req, res) => {
         let { page = 1, size = 10 } = req.query
         page = parseInt(page)
         size = parseInt(size)
-        const query = {}
-        const totalData = await Folder.find().estimatedDocumentCount()
+        const query = { user: req.user }
+        const totalData = await Folder.find(query).estimatedDocumentCount()
         const data = await Folder.find(query).sort({ updatedAt: -1 }).skip((page - 1) * size).limit(size).exec()
 
         const totalPage = Math.ceil(totalData / size)
@@ -31,7 +31,8 @@ export const createFolder = async (req, res) => {
     try {
         const { name } = req.body;
         const folder = await Folder.create({
-            name: trim(name)
+            name: trim(name),
+            user: req.user
         });
         return res.status(201).json(successResponse(folder));
     } catch (err) {
@@ -42,7 +43,7 @@ export const createFolder = async (req, res) => {
 export const updateFolder = async (req, res) => {
     try {
         const { name } = req.body;
-        const folder = await Folder.findByIdAndUpdate(req.params.id, { name: trim(name) }, { new: true })
+        const folder = await Folder.findByIdAndUpdate(req.params.id, { name: trim(name), user: req.user }, { new: true })
         if (!folder) {
             return res.status(404).json(errorResponse("Not found!"))
         }
@@ -54,7 +55,7 @@ export const updateFolder = async (req, res) => {
 
 export const deleteFolder = async (req, res) => {
     try {
-        const folder = await Folder.findByIdAndDelete(req.params.id)
+        const folder = await Folder.findOneAndDelete({ _id: req.params.id, user: req.user })
         if (!folder) {
             return res.status(404).json(errorResponse("Not found!"))
         }

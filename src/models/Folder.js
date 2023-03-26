@@ -1,11 +1,15 @@
 import { Schema, model, models } from "mongoose";
-import { FOLDER } from "./collectionName";
+import { FOLDER, USER } from "./collectionName";
 
 const FolderSchema = new Schema({
     name: {
         type: String,
         required: true,
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: USER,
+    }
 
 }, { timestamps: true });
 

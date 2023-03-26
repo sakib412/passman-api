@@ -7,7 +7,9 @@ const baseConfig = {
     port: process.env.PORT || 5000,
     secrets: {
         session: process.env.SESSION_SECRET || 'secret'
-    }
+    },
+    clientUrl: process.env.CLIENT_URL || 'http://localhost:3000'
+
 }
 
 let envConfig = {}

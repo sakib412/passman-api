@@ -7,7 +7,7 @@ export const getAllItems = async (req, res) => {
         page = parseInt(page)
         size = parseInt(size)
         // when auth is done, change owner to req.user.id
-        const query = { owner: 1 }
+        const query = { owner: req.user._id }
         if (folder && folder !== "null") {
             query.folder = folder
         }
@@ -25,6 +25,7 @@ export const getAllItems = async (req, res) => {
         }
         return res.json(successResponse(results))
     } catch (err) {
+        console.log(err)
         return res.status(500).json(errorResponse(err.message));
     }
 }

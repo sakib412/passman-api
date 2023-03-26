@@ -18,18 +18,25 @@ export const app = express();
 
 // Middleware
 app.disable('x-powered-by')
-app.use(cors())
+app.use(cors(
+    {
+        origin: config.clientUrl,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+        credentials: true
+    }
+))
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('dev'))
 app.use(session({
+    name: 'uid',
     secret: config.secrets.session,
     saveUninitialized: false,
     resave: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
         sameSite: 'lax',
-        secure: config.env === 'production'
+        secure: config.env === 'production',
     }
 }))
 
@@ -40,10 +47,10 @@ app.get('/', (_req, res) => {
 
 app.use('/api/auth', userRouter)
 
+app.use(requireAuth)
 app.use('/api/folder', folderRouter)
 app.use('/api/item', itemRouter)
 
-app.use(requireAuth)
 
 
 // handle errors
