@@ -35,9 +35,9 @@ app.use(session({
     saveUninitialized: false,
     resave: false,
     cookie: {
-        domain: config.clientHost,
+        // domain: config.clientHost,
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: config.env === 'production' ? 'none' : 'lax',
+        // sameSite: config.env === 'production' ? 'none' : 'lax',
         secure: config.env === 'production',
     }
 }))
