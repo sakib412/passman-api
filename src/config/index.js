@@ -8,7 +8,8 @@ const baseConfig = {
     secrets: {
         session: process.env.SESSION_SECRET || 'secret'
     },
-    clientUrl: process.env.CLIENT_URL || 'http://localhost:3000'
+    clientUrl: process.env.CLIENT_URL || 'http://localhost:3000',
+    clientHost: process.env.CLIENT_HOST || 'localhost',
 
 }
 
