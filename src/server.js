@@ -35,7 +35,7 @@ app.use(session({
     resave: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: 'lax',
+        sameSite: config.env === 'production' ? 'none' : 'lax',
         secure: config.env === 'production',
     }
 }))
