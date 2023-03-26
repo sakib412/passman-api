@@ -7,11 +7,11 @@ export const getAllItems = async (req, res) => {
         page = parseInt(page)
         size = parseInt(size)
         // when auth is done, change owner to req.user.id
-        const query = { owner: req.user._id }
+        const query = { owner: req.user }
         if (folder && folder !== "null") {
             query.folder = folder
         }
-        const totalData = await Item.find().estimatedDocumentCount()
+        const totalData = await Item.find(query).estimatedDocumentCount()
         const data = await Item.find(query).sort({ updatedAt: -1 }).skip((page - 1) * size).limit(size).exec()
 
         const totalPage = Math.ceil(totalData / size)
@@ -41,6 +41,7 @@ export const createItem = async (req, res) => {
             url,
             note,
             folder,
+            owner: req.user
         });
         return res.status(201).json(successResponse(item));
     } catch (err) {
@@ -50,7 +51,7 @@ export const createItem = async (req, res) => {
 
 export const deleteItem = async (req, res) => {
     try {
-        const item = await Item.findByIdAndDelete(req.params.id)
+        const item = await Item.findOneAndDelete({ _id: req.params.id, owner: req.user })
         if (!item) {
             return res.status(404).json(errorResponse("Not found!"))
         }
@@ -62,7 +63,7 @@ export const deleteItem = async (req, res) => {
 
 export const updateItem = async (req, res) => {
     try {
-        const item = Item.findById(req.params.id)
+        const item = Item.findOne({ _id: req.params.id, owner: req.user })
         if (!item) {
             return res.status(404).json(errorResponse('Not found'))
         }
@@ -99,7 +100,7 @@ export const updateItem = async (req, res) => {
 export const bulkDeleteItem = async (req, res) => {
     try {
         const { ids } = req.body
-        const deletedItems = await Item.deleteMany({ _id: { $in: ids } })
+        const deletedItems = await Item.deleteMany({ _id: { $in: ids }, owner: req.user })
         return res.status(200).json(successResponse(deletedItems))
     } catch (err) {
         return res.status(500).json(errorResponse(err.message));
@@ -110,7 +111,7 @@ export const bulkDeleteItem = async (req, res) => {
 export const bulkFolderUpdateItem = async (req, res) => {
     try {
         const { ids, folder } = req.body
-        const updatedItems = await Item.updateMany({ _id: { $in: ids } }, { folder }, { new: true })
+        const updatedItems = await Item.updateMany({ _id: { $in: ids }, owner: req.user }, { folder }, { new: true })
         return res.status(200).json(successResponse(updatedItems))
     } catch (err) {
         return res.status(500).json(errorResponse(err.message));
@@ -120,7 +121,14 @@ export const bulkFolderUpdateItem = async (req, res) => {
 export const insertManyItem = async (req, res) => {
     try {
         const { items } = req.body
-        const insertedItems = await Item.insertMany(items)
+        const itemsWithOwner = items.map(item => {
+            return {
+                ...item,
+                owner: req.user
+            }
+        })
+
+        const insertedItems = await Item.insertMany(itemsWithOwner)
         return res.status(200).json(successResponse(insertedItems))
 
     } catch (err) {
