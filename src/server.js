@@ -28,6 +28,7 @@ app.use(cors(
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('dev'))
+app.set('trust proxy', 1)
 app.use(session({
     name: 'uid',
     secret: config.secrets.session,
