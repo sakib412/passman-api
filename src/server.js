@@ -39,7 +39,7 @@ app.use(session({
         domain: config.clientHost,
         maxAge: 1000 * 60 * 60 * 24,
         sameSite: config.isDev ? 'lax' : 'none',
-        // secure: !config.isDev,
+        secure: !config.isDev,
     }
 }))
 
