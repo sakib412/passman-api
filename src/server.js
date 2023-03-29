@@ -20,11 +20,12 @@ export const app = express();
 app.disable('x-powered-by')
 app.use(cors(
     {
-        // origin: config.clientUrl,
-        // methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
+        origin: config.clientUrl,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD'],
         credentials: true
     }
 ))
+
 app.use(json())
 app.use(urlencoded({ extended: true }))
 app.use(morgan('dev'))
@@ -37,8 +38,8 @@ app.use(session({
     cookie: {
         // domain: config.clientHost,
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: config.env === 'production' ? 'strict' : 'lax',
-        secure: config.env === 'production',
+        sameSite: config.isDev ? 'lax' : 'none',
+        secure: !config.isDev,
     }
 }))
 
