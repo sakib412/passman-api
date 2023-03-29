@@ -38,7 +38,7 @@ app.use(session({
     cookie: {
         domain: config.clientHost,
         maxAge: 1000 * 60 * 60 * 24,
-        sameSite: config.isDev ? 'lax' : 'none',
+        sameSite: 'lax',
         secure: !config.isDev,
     }
 }))
